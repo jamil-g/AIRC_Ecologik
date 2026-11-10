@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>What changes when you put data on a map?</title>
+<style>
+:root{color-scheme:light;--ink:#152b28;--muted:#4b645d;--paper:#f7f5ec;--line:#d2dbd0;--green:#135c46;--mint:#dfede0;--map:#e8edda;--orange:#a83b24}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.45 system-ui,sans-serif}button,select{font:inherit}button{cursor:pointer}button:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid #b86a14;outline-offset:3px}[hidden]{display:none!important}
+.shell{max-width:1540px;margin:auto;padding:22px clamp(20px,4vw,64px) 24px;min-height:100svh;display:flex;flex-direction:column;justify-content:center}
+.top,.bottom{display:flex;justify-content:space-between;align-items:center;gap:15px}.top{padding-bottom:16px;border-bottom:1px solid var(--line);margin-bottom:20px}.brand,.kicker,.meta,.maptag{font-size:.76rem;letter-spacing:.12em;font-weight:750;text-transform:uppercase}.brand span{color:var(--green)}.actions,.nav{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+button,select{border:1px solid #b8c9bd;border-radius:8px;background:#fffef8;color:var(--ink);padding:8px 13px;min-height:42px}button:hover{background:#edf4e9}button:disabled{opacity:.43;cursor:default}.primary{background:var(--green);color:white;border-color:var(--green)}.primary:hover{background:#174c3e}
+main{display:grid;grid-template-columns:minmax(280px,.85fr) minmax(0,1.55fr);gap:clamp(14px,2.2vw,35px);align-items:stretch}.story,.visual{min-width:0}.story{padding:clamp(16px,2.4vw,36px);background:#fffdf6;border:1px solid var(--line);border-radius:18px;display:flex;flex-direction:column;justify-content:center;min-height:490px}.kicker{color:var(--green);margin:0 0 14px}.story h1{font-family:Georgia,serif;font-weight:500;font-size:clamp(2.05rem,3.7vw,4rem);line-height:1.02;letter-spacing:-.045em;margin:0 0 16px;outline:none}.story p{max-width:37ch}.intro{color:var(--muted);font-size:clamp(1rem,1.28vw,1.2rem);margin:0 0 16px}.bubble{background:var(--mint);border-radius:0 12px 12px 12px;padding:13px 15px;margin:4px 0 14px;font-weight:650}.controls{display:grid;gap:10px}.controls label{display:grid;gap:4px;font-size:.83rem;font-weight:700}.controls select{width:100%}.compare{display:grid;grid-template-columns:1fr 1fr;gap:9px}.results{margin:0;min-height:1.45em;font-weight:650;color:var(--green)}.results small{display:block;color:var(--muted);font-weight:500}.visual{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--map);display:flex;flex-direction:column;min-height:490px}.visual-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 19px;background:#f9faf0;border-bottom:1px solid #cfdbcc}.visual-head strong{font-size:.95rem}.maptag{color:#3a5d4e;text-align:right}.figure{flex:1;display:flex;align-items:center;justify-content:center;min-height:0}.map{width:100%;height:auto;display:block}.visual-foot{padding:10px 17px;background:#f9faf0;border-top:1px solid #cfdbcc;font-size:.86rem;color:var(--muted);min-height:42px}.table-wrap{width:100%;padding:clamp(12px,4vw,58px)}table{width:100%;border-collapse:collapse;background:#fffdf6;border-radius:12px;overflow:hidden;font-variant-numeric:tabular-nums}th,td{padding:12px 16px;text-align:left;border-bottom:1px solid #dbe4d6}th{background:#dbe8da;color:#29483c;font-size:.85rem}th:last-child,td:last-child{text-align:right}tr:last-child td{border-bottom:0}tr.pick{background:#d7eddd}.bottom{padding-top:16px}.meta{color:var(--muted)}.dots{display:flex;gap:6px;margin-top:7px}.dot{height:4px;width:25px;border-radius:3px;background:#cddad0}.dot.on{background:var(--green)}details{margin-top:14px;color:var(--muted);font-size:.92rem}summary{cursor:pointer;width:max-content}details p{margin:5px 0 0}.prompt{margin:4px 0 0;color:var(--muted);font-size:.85rem}.prompt textarea{font:inherit;width:100%;min-height:5em;margin-top:5px}.career{padding:clamp(22px,5vw,65px);width:100%;align-self:center}.career ol{list-style:none;padding:0;margin:0}.career li{border-bottom:1px solid #b5c6ae;padding:18px 0}.career li:last-child{border:0}.career strong{display:block;font:500 clamp(1.3rem,3vw,2.5rem) Georgia,serif}.career span{color:var(--muted)}.map text{paint-order:stroke;stroke:#e8edda;stroke-width:5;stroke-linejoin:round;fill:#19332b;font-weight:740;font-size:20px}.map text.minor{font-size:15px;letter-spacing:.09em;fill:#425f58}.map text.callout{fill:#912f1d;font-size:16px}.map text.inset{fill:#135c46;font-size:17px}
+@media(max-width:900px){.shell{justify-content:flex-start}main{grid-template-columns:1fr}.story,.visual{min-height:auto}.story h1{font-size:clamp(2rem,6vw,3.4rem)}.visual .figure{min-height:260px}}@media(max-width:490px){.shell{padding:12px}.top{align-items:flex-start}.actions button{font-size:.8rem}.dot{width:13px}th,td{padding:8px}.brand{font-size:.64rem}}
+@media(prefers-reduced-motion:no-preference){.route{animation:reveal .38s ease-out}@keyframes reveal{from{opacity:.25}to{opacity:1}}}
+
+.shell{min-height:100svh}.story,.visual{min-height:clamp(400px,66vh,640px)}
+.visual{background:#e7efed}.visual-head,.visual-foot{background:#f8faf5;flex-shrink:0}
+.figure{flex:1;min-height:0}.table-wrap{align-self:flex-start;padding:15px 18px;width:100%;max-height:clamp(325px,55vh,520px);overflow:auto}
+table{border-radius:0;font-size:clamp(.85rem,1.25vw,1rem);white-space:nowrap}
+th{position:sticky;top:0;z-index:1}td,th{padding:8px 10px}tbody tr:nth-child(even){background:#f2f5ed}
+.visual-foot a{color:var(--green);text-underline-offset:2px}.map text{stroke:#e7efed;stroke-width:4;font-size:15px}.map text.water{fill:#396566;letter-spacing:.11em;font-size:13px}.map text.street-label{font-size:12px}.map text.state-label{font-size:15px}
+.map .road{transition:stroke .2s ease,stroke-width .2s ease}.map .city-dot{transition:fill .2s ease}
+.swatch{display:inline-block;width:17px;border-bottom:4px solid #b03622;vertical-align:middle;margin:0 5px 1px 0}.label{font-weight:700}.result-line{margin:0;color:#8c2b1b;font-weight:700}.table-wrap:focus-visible{outline:3px solid var(--green);outline-offset:-3px}.map{max-height:55vh}.source-note{font-size:.82rem;color:var(--muted)}
+@media(max-width:900px){.story,.visual{min-height:auto}.map{max-height:none}}@media(max-width:490px){table{white-space:normal}.table-wrap{padding:8px}th,td{padding:6px}}
+@media(prefers-reduced-motion:reduce){.map .road,.map .city-dot{transition:none}}
+
+.map-panel{width:100%;display:flex;flex-direction:column;align-self:stretch}
+.map-toolbar{display:flex;flex-shrink:0;gap:6px;flex-wrap:wrap;align-items:center;padding:8px 12px;background:#f8faf5;border-bottom:1px solid var(--line)}
+.map-toolbar button{font-size:.81rem;padding:5px 11px;min-height:34px;border-radius:6px}
+.map-toolbar button[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:white}
+.map-reset{margin-left:auto}.map-status{color:var(--muted);font-size:.74rem}
+.map-viewport{position:relative;flex:1;min-height:clamp(310px,49vh,640px);overflow:hidden;isolation:isolate;background:#e7efed}
+.map-fallback,.live-map{position:absolute;inset:0}
+.map-fallback > .map{width:100%;height:100%;max-height:none}
+.map-fallback[aria-hidden="true"]{display:none}
+.live-map{visibility:hidden;background:#e7efed}
+.live-map.is-live{visibility:visible}
+.live-map .leaflet-control-attribution{font-size:10px}
+.live-map .leaflet-control-zoom a{color:#152b28}
+@media(max-width:490px){.map-toolbar{padding:7px}.map-toolbar button{padding:4px 8px}.map-reset{margin-left:0}.map-viewport{min-height:340px}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="top"><div class="brand">GIS Week <span> / </span> Jamil Garzuzi</div><div class="actions"><button id="full" type="button">Full screen</button></div></header>
+<main>
+<section class="story" aria-label="Story">
+<p id="kicker" class="kicker"></p><h1 id="title" tabindex="-1"></h1><p id="intro" class="intro"></p><p id="question" class="bubble"></p>
+<div id="controls" class="controls"></div>
+</section>
+<section class="visual" aria-label="Map and data">
+<div class="visual-head"><strong id="visual-title"></strong><span id="maptag" class="maptag"></span></div>
+<div class="figure" id="figure"></div><div class="visual-foot" id="legend"></div>
+</section>
+</main>
+<footer class="bottom">
+<div><div id="meta" class="meta" aria-live="polite"></div><div id="dots" class="dots" aria-hidden="true"></div></div>
+<div class="nav"><button id="prev" type="button" aria-label="Previous chapter">← Back</button><button id="next" type="button" class="primary">Next →</button></div>
+</footer>
+<details id="notes"><summary>Presenter notes</summary><p id="note"></p></details>
+</div>
+<script>
+"use strict";
+const cities = [["Seattle",737015,47.61934,-122.35154],["Spokane",228989,47.66693,-117.43332],["Tacoma",219346,47.2522,-122.45983],["Vancouver",190915,45.63716,-122.59657],["Bellevue",151854,47.59742,-122.15747],["Kent",136588,47.38797,-122.21273],["Everett",110629,47.9612,-122.18893],["Renton",106785,47.47949,-122.19489],["Spokane Valley",102976,47.66335,-117.23278],["Federal Way",101030,47.3116,-122.33776],["Yakima",96968,46.59094,-120.5494],["Kirkland",92175,47.69702,-122.20369],["Bellingham",91482,48.75344,-122.47018],["Auburn",87256,47.30379,-122.21025],["Kennewick",83921,46.19833,-119.17362],["Pasco",77108,46.25029,-119.12907],["Redmond",73256,47.67792,-122.11534],["Marysville",70714,48.08021,-122.15431],["Sammamish",67455,47.59427,-122.03808],["Lakewood",63612,47.16409,-122.52811],["Richland",60560,46.28159,-119.29225],["Shoreline",58608,47.75753,-122.3453],["Olympia",55605,47.0406,-122.895],["Lacey",53526,47.04566,-122.79525],["Burien",52066,47.47561,-122.34466],["Bothell",48161,47.77353,-122.20438],["Bremerton",43505,47.53997,-122.71706],["Puyallup",42973,47.17922,-122.28919],["Edmonds",42853,47.8136,-122.35333],["Issaquah",40051,47.54625,-122.05815],["Lynnwood",38568,47.82898,-122.30067],["Longview",37818,46.14571,-122.9643],["Lake Stevens",35630,47.9993,-122.09375],["Wenatchee",35508,47.43599,-120.32927],["Mount Vernon",35219,48.41707,-122.31183],["University Place",34866,47.21537,-122.54726],["Walla Walla",34060,46.06701,-118.33703],["Pullman",32901,46.73355,-117.16795],["Des Moines",32888,47.38871,-122.31758],["SeaTac",31454,47.44369,-122.29852],["Maple Valley",28013,47.36715,-122.03482],["Camas",26065,45.60181,-122.43038],["Mercer Island",25748,47.564,-122.23121],["Tumwater",25350,46.98946,-122.91728],["Moses Lake",25146,47.12785,-119.27638]];
+const streets = [["1ST AVE","PIKE ST","PINE ST",51,"46,127 3,53"],["1ST AVE","SENECA ST","UNIVERSITY ST",98,"164,326 133,273"],["1ST AVE","SPRING ST","SENECA ST",46,"196,378 164,326"],["1ST AVE","UNION ST","PIKE ST",42,"90,200 46,127"],["1ST AVE","UNIVERSITY ST","UNION ST",42,"133,273 90,200"],["2ND AVE","MADISON ST","SPRING ST",59,"282,398 251,346"],["2ND AVE","PIKE ST","PINE ST",59,"102,94 58,20"],["2ND AVE","SENECA ST","UNIVERSITY ST",81,"220,293 189,240"],["2ND AVE","SPRING ST","SENECA ST",59,"251,346 220,293"],["2ND AVE","UNION ST","PIKE ST",81,"145,167 102,94"],["2ND AVE","UNIVERSITY ST","UNION ST",81,"189,240 145,167"],["3RD AVE","MADISON ST","SPRING ST",80,"337,365 306,313"],["3RD AVE","MARION ST","MADISON ST",80,"369,418 364,411 337,365"],["3RD AVE","PIKE ST","PINE ST",84,"157,61 116,-8 114,-12"],["3RD AVE","SENECA ST","UNIVERSITY ST",82,"275,260 244,208"],["3RD AVE","SPRING ST","SENECA ST",80,"306,313 275,260"],["3RD AVE","UNION ST","PIKE ST",82,"201,134 157,61"],["3RD AVE","UNIVERSITY ST","UNION ST",82,"244,208 201,134"],["4TH AVE","MADISON ST","SPRING ST",87,"393,333 364,285 362,280"],["4TH AVE","MARION ST","MADISON ST",87,"424,385 393,333"],["4TH AVE","SENECA ST","UNIVERSITY ST",78,"331,227 327,222 299,175"],["4TH AVE","SPRING ST","SENECA ST",87,"362,280 331,227"],["4TH AVE","UNION ST","PIKE ST",78,"256,101 213,28"],["4TH AVE","UNIVERSITY ST","UNION ST",78,"299,175 259,107 256,101"],["5TH AVE","COLUMBIA ST","MARION ST",85,"511,405 480,353"],["5TH AVE","MADISON ST","SPRING ST",35,"448,300 417,247"],["5TH AVE","MARION ST","MADISON ST",35,"480,353 448,300"],["5TH AVE","SENECA ST","UNIVERSITY ST",66,"386,195 364,158 355,142"],["5TH AVE","SPRING ST","SENECA ST",61,"417,247 386,195"],["5TH AVE","UNION ST","PIKE ST",40,"311,69 294,39 268,-5"],["5TH AVE","UNIVERSITY ST","UNION ST",42,"355,142 334,107 315,75 315,74 311,69"],["6TH AVE","MADISON ST","SPRING ST",81,"504,267 472,214"],["6TH AVE","MARION ST","MADISON ST",76,"535,320 504,267"],["6TH AVE","SENECA ST","UNIVERSITY ST",81,"441,162 411,109"],["6TH AVE","SPRING ST","SENECA ST",81,"472,214 460,193 441,162"],["6TH AVE","UNIVERSITY ST","UNION ST",81,"411,109 389,73 367,36"],["8TH AVE","SENECA ST","CONVENTION CTR DR",88,"552,96 530,59 521,44 460,-59"],["ALASKAN WAY","SENECA ST","UNIVERSITY ST",100,"69,383 38,329"],["ALASKAN WAY","UNIVERSITY ST","UNION ST",100,"38,329 -5,256"],["HUBBELL PL","SENECA ST","UNIVERSITY ST",27,"509,121 506,98 505,97 505,96 505,95 505,94 505,93 505,92 505,91 505,90 504,80"],["HUBBELL PL","SPRING ST","SENECA ST",27,"528,181 519,160 516,148 513,139 509,121"],["HUBBELL PL","UNIVERSITY ST","9TH AVE",27,"504,80 507,8 510,-2 512,-12 516,-22 519,-32 523,-42 527,-52 532,-61 533,-63"],["MADISON ST","2ND AVE","3RD AVE",17,"282,398 337,365"],["MADISON ST","3RD AVE","4TH AVE",22,"337,365 364,350 393,333"],["MADISON ST","4TH AVE","5TH AVE",79,"393,333 448,300"],["MADISON ST","5TH AVE","6TH AVE",84,"448,300 504,267"],["MARION ST","4TH AVE","5TH AVE",46,"424,385 480,353"],["MARION ST","5TH AVE","6TH AVE",53,"480,353 535,320"],["PIKE LOWER ST","POST AL","1ST AVE",0,"21,146 46,127"],["PIKE PL","PIKE ST","POST AL",0,"23,140 18,135 8,126"],["PIKE ST","1ST AVE","2ND AVE",98,"46,127 74,110 102,94"],["PIKE ST","2ND AVE","3RD AVE",61,"102,94 157,61"],["PIKE ST","3RD AVE","4TH AVE",61,"157,61 213,28"],["PIKE ST","4TH AVE","5TH AVE",73,"213,28 268,-5"],["PIKE ST","PIKE PL","1ST AVE",0,"23,140 46,127"],["PINE ST","1ST AVE","2ND AVE",55,"3,53 32,36 58,20"],["PINE ST","2ND AVE","3RD AVE",54,"58,20 107,-8 114,-12"],["POST AL","DEAD END","UNION ST",0,"90,263 62,216"],["POST AL","UNION ST","PIKE LOWER ST",0,"62,216 22,148 21,147 21,146"],["POST AVE","SPRING ST","SENECA ST",92,"166,396 137,346 135,343"],["SENECA ST","1ST AVE","2ND AVE",29,"164,326 220,293"],["SENECA ST","2ND AVE","3RD AVE",25,"220,293 275,260"],["SENECA ST","3RD AVE","4TH AVE",36,"275,260 331,227"],["SENECA ST","4TH AVE","5TH AVE",25,"331,227 364,207 386,195"],["SENECA ST","5TH AVE","6TH AVE",27,"386,195 441,162"],["SENECA ST","6TH AVE","HUBBELL PL",78,"441,162 480,139 491,132 499,127 506,123 509,121"],["SENECA ST","ALASKAN WAY","WESTERN AVE",0,"69,383 109,359"],["SENECA ST","WESTERN AVE","POST AVE",0,"109,359 135,343"],["SPRING ST","1ST AVE","2ND AVE",69,"196,378 251,346"],["SPRING ST","2ND AVE","3RD AVE",41,"251,346 306,313"],["SPRING ST","3RD AVE","4TH AVE",46,"306,313 362,280"],["SPRING ST","4TH AVE","5TH AVE",52,"362,280 364,278 417,247"],["SPRING ST","5TH AVE","6TH AVE",52,"417,247 472,214"],["SPRING ST","6TH AVE","7TH AVE",75,"472,214 499,199 509,193 513,191 517,188 522,185 525,183 528,181"],["SPRING ST","POST AVE","1ST AVE",67,"166,396 175,391 196,378"],["UNION ST","1ST AVE","2ND AVE",27,"90,200 118,183 145,167"],["UNION ST","2ND AVE","3RD AVE",19,"145,167 201,134"],["UNION ST","3RD AVE","4TH AVE",78,"201,134 256,101"],["UNION ST","4TH AVE","5TH AVE",78,"256,101 311,69"],["UNION ST","5TH AVE","6TH AVE",78,"311,69 364,37 367,36"],["UNION ST","6TH AVE","7TH AVE",78,"367,36 422,3"],["UNION ST","ALASKAN WAY","DEAD END 1",0,"-5,256 28,236"],["UNION ST","DEAD END 2","1ST AVE",0,"67,213 90,200"],["UNION ST","WESTERN AVE","POST AL",0,"34,233 57,219 62,216"],["UNIVERSITY ST","1ST AVE","2ND AVE",67,"133,273 189,240"],["UNIVERSITY ST","2ND AVE","3RD AVE",86,"189,240 244,208"],["UNIVERSITY ST","3RD AVE","4TH AVE",56,"244,208 270,192 292,179 299,175"],["UNIVERSITY ST","4TH AVE","5TH AVE",38,"299,175 306,171 355,142"],["UNIVERSITY ST","5TH AVE","6TH AVE",47,"355,142 364,136 410,109 411,109"],["UNIVERSITY ST","6TH AVE","DEAD END",0,"411,109 431,94 455,80 457,79 459,77 460,76 461,75"],["UNIVERSITY ST","ALASKAN WAY","WESTERN AVE",65,"38,329 78,306"],["UNIVERSITY ST","HUBBELL PL","8 LOWER AVE",0,"504,80 512,79 515,79 519,77 526,72 532,68 533,66 534,64 535,59"],["WESTERN AVE","SENECA ST","UNIVERSITY ST",26,"109,359 108,358 78,306"],["WESTERN AVE","SPRING ST","SENECA ST",26,"140,411 111,363 109,359"],["WESTERN AVE","UNION ST","PIKE ST",43,"34,233 -9,159"],["WESTERN AVE","UNIVERSITY ST","UNION ST",43,"78,306 47,254 34,233"]];
+const boundary = [[[[-117.033359,49.000239],[-117.044313,47.762451],[-117.038836,46.426077],[-117.055267,46.343923],[-116.92382,46.168661],[-116.918344,45.993399],[-118.988627,45.998876],[-119.125551,45.933153],[-119.525367,45.911245],[-119.963522,45.823614],[-120.209985,45.725029],[-120.505739,45.697644],[-120.637186,45.746937],[-121.18488,45.604536],[-121.217742,45.670259],[-121.535404,45.725029],[-121.809251,45.708598],[-122.247407,45.549767],[-122.762239,45.659305],[-122.811531,45.960537],[-122.904639,46.08103],[-123.11824,46.185092],[-123.211348,46.174138],[-123.370179,46.146753],[-123.545441,46.261769],[-123.72618,46.300108],[-123.874058,46.239861],[-124.065751,46.327492],[-124.027412,46.464416],[-123.895966,46.535616],[-124.098612,46.74374],[-124.235536,47.285957],[-124.31769,47.357157],[-124.427229,47.740543],[-124.624399,47.88842],[-124.706553,48.184175],[-124.597014,48.381345],[-124.394367,48.288237],[-123.983597,48.162267],[-123.704273,48.167744],[-123.424949,48.118452],[-123.162056,48.167744],[-123.036086,48.080113],[-122.800578,48.08559],[-122.636269,47.866512],[-122.515777,47.882943],[-122.493869,47.587189],[-122.422669,47.318818],[-122.324084,47.346203],[-122.422669,47.576235],[-122.395284,47.800789],[-122.230976,48.030821],[-122.362422,48.123929],[-122.373376,48.288237],[-122.471961,48.468976],[-122.422669,48.600422],[-122.488392,48.753777],[-122.647223,48.775685],[-122.795101,48.8907],[-122.756762,49.000239],[-117.033359,49.000239]]],[[[-122.718423,48.310145],[-122.586977,48.35396],[-122.608885,48.151313],[-122.767716,48.227991],[-122.718423,48.310145]]],[[[-123.025132,48.583992],[-122.915593,48.715438],[-122.767716,48.556607],[-122.811531,48.419683],[-123.041563,48.458022],[-123.025132,48.583992]]]];
+
+const streetLatLon = [[[[47.60882,-122.340035],[47.609822,-122.340936]]],[[[47.606124,-122.337565],[47.606842,-122.338214]]],[[[47.60542,-122.336896],[47.606124,-122.337565]]],[[[47.607831,-122.339115],[47.60882,-122.340035]]],[[[47.606842,-122.338214],[47.607831,-122.339115]]],[[[47.605169,-122.335145],[47.605873,-122.335794]]],[[[47.609287,-122.338913],[47.610289,-122.339835]]],[[[47.606591,-122.336443],[47.607309,-122.337092]]],[[[47.605873,-122.335794],[47.606591,-122.336443]]],[[[47.608298,-122.338013],[47.609287,-122.338913]]],[[[47.607309,-122.337092],[47.608298,-122.338013]]],[[[47.605636,-122.334044],[47.60634,-122.334693]]],[[[47.604918,-122.333374],[47.605013,-122.333479],[47.605636,-122.334044]]],[[[47.609754,-122.337812],[47.610689,-122.33867],[47.610743,-122.338712]]],[[[47.607058,-122.335342],[47.607763,-122.335991]]],[[[47.60634,-122.334693],[47.607058,-122.335342]]],[[[47.608765,-122.336891],[47.609754,-122.337812]]],[[[47.607763,-122.335991],[47.608765,-122.336891]]],[[[47.60609,-122.332922],[47.60674,-122.333528],[47.606808,-122.333571]]],[[[47.605385,-122.332273],[47.60609,-122.332922]]],[[[47.607526,-122.33422],[47.607593,-122.334303],[47.60823,-122.334889]]],[[[47.606808,-122.333571],[47.607526,-122.33422]]],[[[47.609232,-122.33579],[47.610221,-122.33669]]],[[[47.60823,-122.334889],[47.609151,-122.335727],[47.609232,-122.33579]]],[[[47.605134,-122.330502],[47.605839,-122.331151]]],[[[47.606556,-122.33182],[47.607275,-122.332469]]],[[[47.605839,-122.331151],[47.606556,-122.33182]]],[[[47.607979,-122.333118],[47.60848,-122.333578],[47.608697,-122.333767]]],[[[47.607275,-122.332469],[47.607979,-122.333118]]],[[[47.609686,-122.334688],[47.610092,-122.335044],[47.610688,-122.335588]]],[[[47.608697,-122.333767],[47.609171,-122.334207],[47.609605,-122.334604],[47.609618,-122.334605],[47.609686,-122.334688]]],[[[47.607024,-122.330698],[47.607741,-122.331368]]],[[[47.606306,-122.330049],[47.607024,-122.330698]]],[[[47.608446,-122.332016],[47.609164,-122.332645]]],[[[47.607741,-122.331368],[47.608026,-122.331619],[47.608446,-122.332016]]],[[[47.609164,-122.332645],[47.609652,-122.333105],[47.610153,-122.333566]]],[[[47.60938,-122.329793],[47.609881,-122.330253],[47.610084,-122.330442],[47.61148,-122.331719]]],[[[47.605318,-122.339468],[47.606049,-122.340117]]],[[[47.606049,-122.340117],[47.607038,-122.341018]]],[[[47.609026,-122.330655],[47.60934,-122.330724],[47.609354,-122.330745],[47.609367,-122.330745],[47.609381,-122.330746],[47.609395,-122.330746],[47.609409,-122.330747],[47.609422,-122.330747],[47.609436,-122.330747],[47.60945,-122.330748],[47.609586,-122.330772]]],[[[47.608209,-122.330246],[47.608494,-122.330436],[47.608658,-122.330502],[47.60878,-122.330566],[47.609026,-122.330655]]],[[[47.609586,-122.330772],[47.610574,-122.33074],[47.610712,-122.330683],[47.610849,-122.330646],[47.610988,-122.330569],[47.611125,-122.330512],[47.611264,-122.330435],[47.611402,-122.330358],[47.611526,-122.33026],[47.611554,-122.330241]]],[[[47.605169,-122.335145],[47.605636,-122.334044]]],[[[47.605636,-122.334044],[47.605849,-122.333503],[47.60609,-122.332922]]],[[[47.60609,-122.332922],[47.606556,-122.33182]]],[[[47.606556,-122.33182],[47.607024,-122.330698]]],[[[47.605385,-122.332273],[47.605839,-122.331151]]],[[[47.605839,-122.331151],[47.606306,-122.330049]]],[[[47.608553,-122.340534],[47.60882,-122.340035]]],[[[47.608635,-122.340496],[47.608703,-122.3406],[47.608823,-122.340806]]],[[[47.60882,-122.340035],[47.60906,-122.339475],[47.609287,-122.338913]]],[[[47.609287,-122.338913],[47.609754,-122.337812]]],[[[47.609754,-122.337812],[47.610221,-122.33669]]],[[[47.610221,-122.33669],[47.610688,-122.335588]]],[[[47.608635,-122.340496],[47.60882,-122.340035]]],[[[47.609822,-122.340936],[47.610063,-122.340355],[47.610289,-122.339835]]],[[[47.610289,-122.339835],[47.610686,-122.338853],[47.610743,-122.338712]]],[[[47.606968,-122.33909],[47.607604,-122.339676]]],[[[47.607604,-122.339676],[47.608526,-122.340513],[47.608539,-122.340534],[47.608553,-122.340534]]],[[[47.605165,-122.337497],[47.605843,-122.338104],[47.605883,-122.338146]]],[[[47.606124,-122.337565],[47.606591,-122.336443]]],[[[47.606591,-122.336443],[47.607058,-122.335342]]],[[[47.607058,-122.335342],[47.607526,-122.33422]]],[[[47.607526,-122.33422],[47.607809,-122.333559],[47.607979,-122.333118]]],[[[47.607979,-122.333118],[47.608446,-122.332016]]],[[[47.608446,-122.332016],[47.608771,-122.331235],[47.60887,-122.331015],[47.608941,-122.330855],[47.608998,-122.330715],[47.609026,-122.330655]]],[[[47.605318,-122.339468],[47.605657,-122.338667]]],[[[47.605657,-122.338667],[47.605883,-122.338146]]],[[[47.60542,-122.336896],[47.605873,-122.335794]]],[[[47.605873,-122.335794],[47.60634,-122.334693]]],[[[47.60634,-122.334693],[47.606808,-122.333571]]],[[[47.606808,-122.333571],[47.606836,-122.333531],[47.607275,-122.332469]]],[[[47.607275,-122.332469],[47.607741,-122.331368]]],[[[47.607741,-122.331368],[47.607954,-122.330826],[47.608039,-122.330626],[47.608068,-122.330546],[47.60811,-122.330466],[47.608152,-122.330366],[47.60818,-122.330306],[47.608209,-122.330246]]],[[[47.605165,-122.337497],[47.605236,-122.337316],[47.60542,-122.336896]]],[[[47.607831,-122.339115],[47.608072,-122.338554],[47.608298,-122.338013]]],[[[47.608298,-122.338013],[47.608765,-122.336891]]],[[[47.608765,-122.336891],[47.609232,-122.33579]]],[[[47.609232,-122.33579],[47.609686,-122.334688]]],[[[47.609686,-122.334688],[47.610138,-122.333626],[47.610153,-122.333566]]],[[[47.610153,-122.333566],[47.61062,-122.332464]]],[[[47.607038,-122.341018],[47.607321,-122.340357]]],[[[47.607647,-122.339576],[47.607831,-122.339115]]],[[[47.607364,-122.340236],[47.607562,-122.339776],[47.607604,-122.339676]]],[[[47.606842,-122.338214],[47.607309,-122.337092]]],[[[47.607309,-122.337092],[47.607763,-122.335991]]],[[[47.607763,-122.335991],[47.607989,-122.33547],[47.608173,-122.335029],[47.60823,-122.334889]]],[[[47.60823,-122.334889],[47.608286,-122.334749],[47.608697,-122.333767]]],[[[47.608697,-122.333767],[47.608782,-122.333587],[47.609164,-122.332666],[47.609164,-122.332645]]],[[[47.609164,-122.332645],[47.609375,-122.332246],[47.609573,-122.331765],[47.609588,-122.331725],[47.609616,-122.331685],[47.60963,-122.331665],[47.609644,-122.331645]]],[[[47.606049,-122.340117],[47.606375,-122.339316]]],[[[47.609586,-122.330772],[47.609602,-122.33061],[47.609603,-122.330549],[47.609632,-122.330469],[47.609702,-122.330329],[47.609758,-122.330209],[47.609786,-122.33019],[47.609814,-122.33017],[47.609883,-122.330152]]],[[[47.605657,-122.338667],[47.605671,-122.338687],[47.606375,-122.339316]]],[[[47.604953,-122.338018],[47.605603,-122.338624],[47.605657,-122.338667]]],[[[47.607364,-122.340236],[47.608366,-122.341137]]],[[[47.606375,-122.339316],[47.60708,-122.339965],[47.607364,-122.340236]]]];
+
+const censusUrl = "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer/25";
+const streetsUrl = "https://services.arcgis.com/ZOyb2t4B0UYuYNYH/arcgis/rest/services/Seattle_Streets_1/FeatureServer/0";
+const boundaryUrl = "https://github.com/PublicaMundi/MappingAPI/blob/master/data/geojson/us-states.json";
+const fmt = new Intl.NumberFormat("en-US");
+const get = id => document.getElementById(id);
+const lowScore = score => score > 0 && score < 40;
+const flaggedCount = streets.filter(row => lowScore(row[3])).length;
+const chapters = [
+  {
+    tag: "Population · Table",
+    title: "What changes when you put data on a map?",
+    intro: "Here are Washington’s 45 largest incorporated places, ranked by their 2020 Census population.",
+    takeaway: "You can find the largest city immediately. Where do many of these cities sit close together?",
+    visual: "Washington’s 45 largest incorporated places", label: "2020 Census",
+    notes: "2 min · Introduce yourself briefly and say you started in navigation data. Scroll through the 45 rows and point out how quickly you can find Seattle’s exact population. Ask everyone to picture where the cities are, then reveal the map."
+  },
+  {
+    tag: "Population · Map",
+    title: "Same numbers. Now you can see where.",
+    intro: "Each circle is a place from the table. Bigger circles mean more residents. Notice how many circles cluster near Puget Sound.",
+    takeaway: "A map puts that pattern in view at once. Select a circle on the live map to see the exact count.",
+    visual: "Where Washington’s largest places are located", label: "45 places",
+    notes: "2 min · Let the audience look first. Point to the Seattle–Tacoma cluster and then to Spokane on the other side of the state. Switch between Streets and Satellite to show that the population layer stays in place. These are city population totals. The circles show where the selected cities are and how large they are, without mapping the distribution of people inside each city."
+  },
+  {
+    tag: "Street condition · Table",
+    title: "A street inventory has the details.",
+    intro: "Zoom in to downtown Seattle. Each row records a real street segment, its endpoints and its pavement score.",
+    takeaway: "You can look up a specific block here. To see whether several low scores line up along one street, switch to the map.",
+    visual: "Downtown Seattle street segments", label: "SDOT street inventory",
+    notes: "2 min · Scroll through the sample. Pick a row and point out how the two cross streets identify one segment. Explain that a pavement score is a condition indicator. Then move to the neutral street map."
+  },
+  {
+    tag: "Street condition · Map",
+    title: "Watch what one color reveals.",
+    intro: "The lines are the same street segments from the table. Highlight the lower scores to see where they are.",
+    takeaway: "Look at Seneca Street. Several adjacent blocks stand out together. That’s a place to start a closer review.",
+    visual: "Pavement condition in downtown Seattle", label: "Same street segments",
+    notes: "3 min · Pause on the street map, then click Highlight low scores. Switch to Satellite to show the same red segments against aerial imagery. Point to the connected red segments on Seneca Street and to the separate red runs on Madison Street and 5th Avenue. Red means a recorded score from 1 to 39 under this demo rule. The map is a first pass to direct review. Maintenance priorities also depend on factors like traffic, inspections and budgets."
+  },
+  {
+    tag: "From observation to action",
+    title: "See the pattern. Check the detail. Decide.",
+    intro: "I got into GIS through geography and navigation data. As a GIS developer, I build tools that help people see what’s happening, check the underlying records and decide where to look next.",
+    takeaway: "What table from your own work would you like to see on a map?",
+    visual: "How I got into GIS", label: "Jamil Garzuzi",
+    notes: "2 min · Tell one short story from your work on navigation data, then connect it to the street-color example. If there’s time, mention that the same idea applies to your Ras Al Khaimah urban heat project: a map can show where surface temperatures warrant a closer look."
+  }
+];
+
+let step = 0;
+let highlight = false;
+
+function table(headers, rows, label) {
+  return `<div class="table-wrap" tabindex="0" role="region" aria-label="${label}">
+    <table><thead><tr>${headers.map(title => `<th scope="col">${title}</th>`).join("")}</tr></thead>
+    <tbody>${rows.map(row => `<tr>${row.map(value => `<td>${value}</td>`).join("")}</tr>`).join("")}</tbody></table>
+  </div>`;
+}
+
+function statePoint(lon, lat) {
+  return [(lon + 124.95) * 85, (49.25 - lat) * 125];
+}
+
+function stateMap() {
+  const outline = boundary.flatMap(polygon => polygon.map(ring => ring.map(([lon, lat], i) => {
+    return (i ? "L" : "M") + statePoint(lon, lat).map(n => n.toFixed(1)).join(",");
+  }).join("") + "Z")).join("");
+  const dots = [...cities].reverse().map(([name, pop, lat, lon]) => {
+    const [x,y] = statePoint(lon, lat);
+    return `<circle class="city-dot" cx="${x}" cy="${y}" r="${26*Math.sqrt(pop/cities[0][1])}" fill="#14735a" fill-opacity=".66" stroke="#fafbf3" stroke-width="1"><title>${name} · ${fmt.format(pop)} residents</title></circle>`;
+  }).join("");
+  const names = [
+    ["Seattle", -121.94, 47.93], ["Tacoma", -123.23, 47.17], ["Spokane", -118.28, 47.83],
+    ["Vancouver", -122.39, 45.54], ["Yakima", -120.92, 46.74], ["Tri-Cities", -119.08, 46.53]
+  ].map(([label, lon, lat]) => {
+    const [x,y] = statePoint(lon, lat);
+    return `<text class="state-label" x="${x}" y="${y}" pointer-events="none">${label}</text>`;
+  }).join("");
+  return `<svg class="map" viewBox="0 0 710 490" role="img" aria-label="Map showing the 45 largest incorporated places in Washington in 2020, with a cluster around Puget Sound">
+    <rect width="710" height="490" fill="#e7efed"/>
+    <path d="${outline}" fill="#f8f6df" fill-rule="evenodd" stroke="#98ad98" stroke-width="1.6"/>
+    <text x="21" y="198" class="water">PACIFIC</text><text x="21" y="216" class="water">OCEAN</text>
+    <text x="100" y="134" class="water">PUGET SOUND</text>
+    <path d="M236 202l15-31m-64 104l-16-8" stroke="#526d63" fill="none"/>
+    ${dots}${names}
+    <text x="677" y="55" text-anchor="middle" class="water">↑ N</text>
+  </svg>`;
+}
+
+function roadMap() {
+  const ordered = [...streets].sort((a,b) => Number(lowScore(a[3])) - Number(lowScore(b[3])));
+  const lines = ordered.map(([name, from, to, score, path]) => {
+    const red = highlight && lowScore(score);
+    const d = path.split(";").map(points => "M" + points.split(" ").join("L")).join("");
+    return `<path class="road${red ? " flagged" : ""}" d="${d}" fill="none" stroke="${red ? "#b03622" : "#788e84"}" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"><title>${name}, ${from} to ${to} · recorded score ${score}</title></path>`;
+  }).join("");
+  return `<svg class="map" viewBox="-40 -72 635 523" role="img" aria-label="${highlight ? flaggedCount + " of " : ""}${streets.length} downtown Seattle street segments${highlight ? " with low pavement scores highlighted in red" : " shown in gray"}">
+    <rect x="-40" y="-72" width="635" height="523" fill="#e7efed"/>
+    ${lines}
+    <text class="street-label" x="260" y="246" text-anchor="middle" pointer-events="none">SENECA ST</text>
+    <text class="street-label" x="367" y="381" text-anchor="middle" pointer-events="none">MADISON ST</text>
+    <path d="M470 329l40-22" stroke="#516d63" stroke-width="1.2" fill="none"/>
+    <text class="street-label" x="514" y="310" pointer-events="none">5TH AVE</text>
+    <text class="street-label" x="-11" y="71" pointer-events="none">1ST AVE</text>
+    <path d="M-10 416h100m-100-4v8m100-8v8" stroke="#516d63" stroke-width="1.5"/>
+    <text x="40" y="436" text-anchor="middle" class="street-label">500 ft</text>
+    <text x="565" y="-40" text-anchor="middle" class="water">↑ N</text>
+  </svg>`;
+}
+
+// Shared basemap choice. The SVG view remains available when live tiles cannot load.
+const basemaps = {
+  streets: {
+    title: "Streets",
+    url: "https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}",
+    attribution: 'Tiles: <a href="https://www.usgs.gov/programs/national-geospatial-program/national-map" target="_blank" rel="noopener">USGS The National Map</a>',
+    maxNativeZoom: 19
+  },
+  satellite: {
+    title: "Satellite",
+    url: "https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    attribution: 'Imagery © <a href="https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer" target="_blank" rel="noopener">Esri</a>, Vantor, Earthstar Geographics, and the GIS User Community',
+    maxNativeZoom: 19
+  }
+};
+let basemap = "streets";
+let mapView = null;
+let leafletPromise;
+
+function loadLeaflet() {
+  if (!leafletPromise) {
+    const root = "https://unpkg.com/leaflet@1.9.4/dist/";
+    const css = document.createElement("link");
+    const script = document.createElement("script");
+    css.rel = "stylesheet";
+    css.href = root + "leaflet.css";
+    css.integrity = "sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=";
+    script.src = root + "leaflet.js";
+    script.integrity = "sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=";
+    leafletPromise = Promise.all([css, script].map(asset => new Promise((resolve, reject) => {
+      asset.crossOrigin = "anonymous";
+      asset.onload = resolve;
+      asset.onerror = reject;
+      document.head.append(asset);
+    }))).then(() => window.L).catch(error => {
+      css.remove();
+      script.remove();
+      leafletPromise = null;
+      throw error;
+    });
+  }
+  return leafletPromise;
+}
+
+function mountMap(isRoad) {
+  const figure = get("figure");
+  figure.innerHTML = `<div class="map-panel">
+    <div class="map-toolbar" role="group" aria-label="Map background">
+      <button type="button" data-basemap="streets">Streets</button>
+      <button type="button" data-basemap="satellite">Satellite</button>
+      <button type="button" data-basemap="offline">Offline</button>
+      <button type="button" id="map-reset" class="map-reset" hidden>Reset view</button>
+      <span class="map-status" id="map-status" role="status"></span>
+    </div>
+    <div class="map-viewport">
+      <div id="map-fallback" class="map-fallback">${isRoad ? roadMap() : stateMap()}</div>
+      <div id="live-map" class="live-map" role="region" aria-label="${isRoad ? "Interactive Seattle street condition map" : "Interactive Washington population map"}" aria-hidden="true" inert></div>
+    </div>
+  </div>`;
+  mapView = { isRoad, map: null, layer: null, ready: false, request: 0, timer: null };
+  applyBasemap(mapView);
+}
+
+function showLive(view, visible) {
+  view.ready = visible;
+  get("live-map").classList.toggle("is-live", visible);
+  get("live-map").toggleAttribute("inert", !visible);
+  get("live-map").setAttribute("aria-hidden", String(!visible));
+  get("map-fallback").setAttribute("aria-hidden", String(visible));
+  get("map-reset").hidden = !visible;
+}
+
+function clearBasemap(view) {
+  clearTimeout(view.timer);
+  if (view.layer) view.layer.remove();
+  view.layer = null;
+  view.timer = null;
+}
+
+function disposeMap() {
+  if (!mapView) return;
+  clearBasemap(mapView);
+  if (mapView.map) mapView.map.remove();
+  mapView = null;
+}
+
+function resetMap(view) {
+  view.map.fitBounds(view.bounds, { padding: [32, 30], maxZoom: view.isRoad ? 17 : 8, animate: false });
+}
+
+function roadColor(score) {
+  if (highlight && lowScore(score)) return "#d42d18";
+  return basemap === "satellite" ? "#eef6f3" : "#506b64";
+}
+
+function initLiveMap(view, L) {
+  view.map = L.map(get("live-map"), { minZoom: 4, maxZoom: 19, scrollWheelZoom: false });
+  L.control.scale({ position: "bottomleft", metric: true, imperial: false }).addTo(view.map);
+  if (view.isRoad) {
+    view.roads = streets.map(([name, from, to, score], i) => {
+      const paths = streetLatLon[i];
+      L.polyline(paths, { color: "#172a28", weight: 7.5, opacity: .8, interactive: false }).addTo(view.map);
+      return L.polyline(paths, { color: roadColor(score), weight: 4.5, opacity: .96 })
+        .bindTooltip(`${name} · ${from} to ${to}<br>Recorded pavement score: ${score}`)
+        .bindPopup(`<strong>${name}</strong><br>${from} to ${to}<br>Recorded pavement score: ${score}`)
+        .addTo(view.map);
+    });
+    view.bounds = L.latLngBounds(streetLatLon.flat(2));
+  } else {
+    L.polygon(boundary.map(polygon => polygon.map(ring => ring.map(([lon, lat]) => [lat, lon]))),
+      { color: "#408778", weight: 2, fill: false, interactive: false }).addTo(view.map);
+    view.cities = [...cities].reverse().map(([name, pop, lat, lon]) =>
+      L.circleMarker([lat, lon], { radius: 25 * Math.sqrt(pop / cities[0][1]), color: "#fffef4", weight: 1.4,
+        fillColor: "#12856c", fillOpacity: .7 })
+        .bindTooltip(`${name} · ${fmt.format(pop)} residents`)
+        .bindPopup(`<strong>${name}</strong><br>${fmt.format(pop)} residents · 2020 Census`)
+        .addTo(view.map)
+    );
+    view.bounds = L.latLngBounds([[45.54, -124.71], [49.01, -116.91]]);
+  }
+  resetMap(view);
+}
+
+function recolorMap(view) {
+  if (view.roads) {
+    view.roads.forEach((line, i) => line.setStyle({ color: roadColor(streets[i][3]) }));
+    view.roads.forEach((line, i) => {
+      if (highlight && lowScore(streets[i][3])) line.bringToFront();
+    });
+  }
+  if (view.cities) view.cities.forEach(marker => marker.setStyle({ fillColor: basemap === "satellite" ? "#39e2ba" : "#12856c" }));
+}
+
+async function applyBasemap(view) {
+  const selected = basemap;
+  const request = ++view.request;
+  const isCurrent = () => mapView === view && view.request === request;
+  const status = get("map-status");
+  for (const button of get("figure").querySelectorAll("[data-basemap]")) {
+    button.setAttribute("aria-pressed", String(button.dataset.basemap === selected));
+  }
+  clearBasemap(view);
+  showLive(view, false);
+  if (selected === "offline") {
+    status.textContent = "Embedded map";
+    return;
+  }
+  status.textContent = "Loading background…";
+  const fail = () => {
+    if (!isCurrent()) return;
+    clearBasemap(view);
+    status.textContent = "Background unavailable · embedded map shown";
+  };
+  view.timer = setTimeout(fail, 8000);
+  try {
+    const L = await loadLeaflet();
+    if (!isCurrent() || view.timer === null) return;
+    if (!view.map) initLiveMap(view, L);
+    const {url, attribution, maxNativeZoom} = basemaps[selected];
+    const layer = L.tileLayer(url, { attribution, maxNativeZoom, maxZoom: 19 });
+    view.layer = layer;
+    recolorMap(view);
+    layer.once("tileload", () => {
+      if (!isCurrent() || view.layer !== layer) return;
+      clearTimeout(view.timer);
+      view.timer = null;
+      showLive(view, true);
+      status.textContent = "";
+    });
+    layer.once("load", () => {
+      if (isCurrent() && view.layer === layer && !view.ready) fail();
+    });
+    layer.addTo(view.map);
+  } catch {
+    fail();
+  }
+}
+
+get("figure").addEventListener("click", event => {
+  const button = event.target.closest("button");
+  if (!button || !mapView) return;
+  if (button.id === "map-reset") resetMap(mapView);
+  if (button.dataset.basemap) {
+    const selected = button.dataset.basemap;
+    if (selected === basemap && (mapView.ready || mapView.timer !== null)) return;
+    basemap = selected;
+    applyBasemap(mapView);
+  }
+});
+
+function draw() {
+  disposeMap();
+  const chapter = chapters[step];
+  get("kicker").textContent = chapter.tag;
+  get("title").textContent = chapter.title;
+  get("intro").textContent = chapter.intro;
+  get("question").textContent = chapter.takeaway;
+  get("visual-title").textContent = chapter.visual;
+  get("maptag").textContent = chapter.label;
+  get("note").textContent = chapter.notes;
+  get("meta").textContent = `${step + 1} / ${chapters.length}`;
+  get("dots").innerHTML = chapters.map((_, i) => `<span class="dot${i <= step ? " on" : ""}"></span>`).join("");
+  get("prev").disabled = step === 0;
+  get("next").textContent = ["Show the map →", "Street example →", "Show the streets →", "Wrap up →", "Start again ↺"][step];
+  get("controls").innerHTML = step === 3
+    ? '<button id="highlight" type="button" class="primary" aria-pressed="false">Highlight low scores</button><p id="result" class="result-line" aria-live="polite"></p>'
+    : "";
+  const source = get("legend");
+  const figure = get("figure");
+  if (step === 0) {
+    figure.innerHTML = table(["Rank", "Place", "Residents"], cities.map(([name, pop], i) => [i + 1, name, fmt.format(pop)]), "Scrollable Washington population table");
+    source.innerHTML = `Source: <a href="${censusUrl}" target="_blank" rel="noopener">U.S. Census Bureau, Census 2020</a> · City limits`;
+  } else if (step === 1) {
+    mountMap(false);
+    source.innerHTML = `Circle area = city population · <a href="${censusUrl}" target="_blank" rel="noopener">Census 2020</a> · <a href="${boundaryUrl}" target="_blank" rel="noopener">State outline</a>`;
+  } else if (step === 2) {
+    figure.innerHTML = table(["Street", "Cross street", "Cross street", "Score"], streets.map(row => row.slice(0, 4)), "Scrollable Seattle street condition table");
+    source.innerHTML = `${streets.length} segments in this sample · <a href="${streetsUrl}" target="_blank" rel="noopener">Seattle Department of Transportation</a>`;
+  } else if (step === 3) {
+    mountMap(true);
+    drawRoads();
+  } else {
+    figure.innerHTML = '<div class="career"><ol><li><strong>Geography</strong><span>I learned to look for patterns across places.</span></li><li><strong>Navigation data</strong><span>I worked on the road data behind the maps people use.</span></li><li><strong>GIS development</strong><span>I build tools that turn spatial data into decisions people can explain.</span></li></ol></div>';
+    source.textContent = "GIS Week · From a spreadsheet to a place on the map";
+  }
+}
+
+function drawRoads() {
+  get("map-fallback").innerHTML = roadMap();
+  recolorMap(mapView);
+  const button = get("highlight");
+  button.setAttribute("aria-pressed", String(highlight));
+  button.textContent = highlight ? "Show plain streets" : "Highlight low scores";
+  get("result").textContent = highlight ? `${flaggedCount} of ${streets.length} segments highlighted` : "";
+  get("legend").innerHTML = highlight
+    ? `<span class="swatch"></span><span class="label">Red = score 1–39</span> · Demo threshold · <a href="${streetsUrl}" target="_blank" rel="noopener">SDOT</a>`
+    : `Street geometry · Color layer off · <a href="${streetsUrl}" target="_blank" rel="noopener">SDOT</a>`;
+}
+
+function go(next, focus = true) {
+  if (next < 0 || next >= chapters.length) return;
+  if (next === 0) highlight = false;
+  step = next;
+  draw();
+  if (focus) get("title").focus({ preventScroll: true });
+}
+
+get("controls").addEventListener("click", event => {
+  if (event.target.id !== "highlight") return;
+  highlight = !highlight;
+  drawRoads();
+});
+get("prev").addEventListener("click", () => go(step - 1));
+get("next").addEventListener("click", () => go((step + 1) % chapters.length));
+
+const full = get("full");
+if (!document.fullscreenEnabled) full.hidden = true;
+full.addEventListener("click", () => {
+  const request = document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+  request.catch(() => { full.hidden = true; });
+});
+document.addEventListener("fullscreenchange", () => {
+  full.textContent = document.fullscreenElement ? "Exit full screen" : "Full screen";
+});
+document.addEventListener("keydown", event => {
+  if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.target.closest(".live-map")) return;
+  if (event.key === "ArrowRight") go(step + 1);
+  if (event.key === "ArrowLeft") go(step - 1);
+});
+go(0, false);
+</script>
+</body>
+</html>
