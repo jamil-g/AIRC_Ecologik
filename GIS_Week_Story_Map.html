@@ -39,6 +39,12 @@ th{position:sticky;top:0;z-index:1}td,th{padding:8px 10px}tbody tr:nth-child(eve
 .live-map .leaflet-control-attribution{font-size:10px}
 .live-map .leaflet-control-zoom a{color:#152b28}
 @media(max-width:490px){.map-toolbar{padding:7px}.map-toolbar button{padding:4px 8px}.map-reset{margin-left:0}.map-viewport{min-height:340px}}
+.route-key,.walk-key,.radius-key{display:inline-block;width:18px;vertical-align:middle;margin-right:3px}
+.route-key{border-top:4px solid #ba4c0c}.map text.walk-marker-label{font-size:18px;stroke-width:5}.walk-key{border-top:4px solid #096e58}.radius-key{border-top:2px dashed #355a8c}
+.scene-panel{position:relative;flex:1;align-self:stretch;min-width:0;min-height:clamp(310px,52vh,620px)}
+.scene-panel iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.scene-link{width:fit-content;padding:10px 14px;border-radius:8px;font-weight:700;text-decoration:none}
+.scene-link:focus-visible{outline:3px solid var(--green);outline-offset:3px}
 </style>
 </head>
 <body>
@@ -69,6 +75,7 @@ const boundary = [[[[-117.033359,49.000239],[-117.044313,47.762451],[-117.038836
 const streetLatLon = [[[[47.60882,-122.340035],[47.609822,-122.340936]]],[[[47.606124,-122.337565],[47.606842,-122.338214]]],[[[47.60542,-122.336896],[47.606124,-122.337565]]],[[[47.607831,-122.339115],[47.60882,-122.340035]]],[[[47.606842,-122.338214],[47.607831,-122.339115]]],[[[47.605169,-122.335145],[47.605873,-122.335794]]],[[[47.609287,-122.338913],[47.610289,-122.339835]]],[[[47.606591,-122.336443],[47.607309,-122.337092]]],[[[47.605873,-122.335794],[47.606591,-122.336443]]],[[[47.608298,-122.338013],[47.609287,-122.338913]]],[[[47.607309,-122.337092],[47.608298,-122.338013]]],[[[47.605636,-122.334044],[47.60634,-122.334693]]],[[[47.604918,-122.333374],[47.605013,-122.333479],[47.605636,-122.334044]]],[[[47.609754,-122.337812],[47.610689,-122.33867],[47.610743,-122.338712]]],[[[47.607058,-122.335342],[47.607763,-122.335991]]],[[[47.60634,-122.334693],[47.607058,-122.335342]]],[[[47.608765,-122.336891],[47.609754,-122.337812]]],[[[47.607763,-122.335991],[47.608765,-122.336891]]],[[[47.60609,-122.332922],[47.60674,-122.333528],[47.606808,-122.333571]]],[[[47.605385,-122.332273],[47.60609,-122.332922]]],[[[47.607526,-122.33422],[47.607593,-122.334303],[47.60823,-122.334889]]],[[[47.606808,-122.333571],[47.607526,-122.33422]]],[[[47.609232,-122.33579],[47.610221,-122.33669]]],[[[47.60823,-122.334889],[47.609151,-122.335727],[47.609232,-122.33579]]],[[[47.605134,-122.330502],[47.605839,-122.331151]]],[[[47.606556,-122.33182],[47.607275,-122.332469]]],[[[47.605839,-122.331151],[47.606556,-122.33182]]],[[[47.607979,-122.333118],[47.60848,-122.333578],[47.608697,-122.333767]]],[[[47.607275,-122.332469],[47.607979,-122.333118]]],[[[47.609686,-122.334688],[47.610092,-122.335044],[47.610688,-122.335588]]],[[[47.608697,-122.333767],[47.609171,-122.334207],[47.609605,-122.334604],[47.609618,-122.334605],[47.609686,-122.334688]]],[[[47.607024,-122.330698],[47.607741,-122.331368]]],[[[47.606306,-122.330049],[47.607024,-122.330698]]],[[[47.608446,-122.332016],[47.609164,-122.332645]]],[[[47.607741,-122.331368],[47.608026,-122.331619],[47.608446,-122.332016]]],[[[47.609164,-122.332645],[47.609652,-122.333105],[47.610153,-122.333566]]],[[[47.60938,-122.329793],[47.609881,-122.330253],[47.610084,-122.330442],[47.61148,-122.331719]]],[[[47.605318,-122.339468],[47.606049,-122.340117]]],[[[47.606049,-122.340117],[47.607038,-122.341018]]],[[[47.609026,-122.330655],[47.60934,-122.330724],[47.609354,-122.330745],[47.609367,-122.330745],[47.609381,-122.330746],[47.609395,-122.330746],[47.609409,-122.330747],[47.609422,-122.330747],[47.609436,-122.330747],[47.60945,-122.330748],[47.609586,-122.330772]]],[[[47.608209,-122.330246],[47.608494,-122.330436],[47.608658,-122.330502],[47.60878,-122.330566],[47.609026,-122.330655]]],[[[47.609586,-122.330772],[47.610574,-122.33074],[47.610712,-122.330683],[47.610849,-122.330646],[47.610988,-122.330569],[47.611125,-122.330512],[47.611264,-122.330435],[47.611402,-122.330358],[47.611526,-122.33026],[47.611554,-122.330241]]],[[[47.605169,-122.335145],[47.605636,-122.334044]]],[[[47.605636,-122.334044],[47.605849,-122.333503],[47.60609,-122.332922]]],[[[47.60609,-122.332922],[47.606556,-122.33182]]],[[[47.606556,-122.33182],[47.607024,-122.330698]]],[[[47.605385,-122.332273],[47.605839,-122.331151]]],[[[47.605839,-122.331151],[47.606306,-122.330049]]],[[[47.608553,-122.340534],[47.60882,-122.340035]]],[[[47.608635,-122.340496],[47.608703,-122.3406],[47.608823,-122.340806]]],[[[47.60882,-122.340035],[47.60906,-122.339475],[47.609287,-122.338913]]],[[[47.609287,-122.338913],[47.609754,-122.337812]]],[[[47.609754,-122.337812],[47.610221,-122.33669]]],[[[47.610221,-122.33669],[47.610688,-122.335588]]],[[[47.608635,-122.340496],[47.60882,-122.340035]]],[[[47.609822,-122.340936],[47.610063,-122.340355],[47.610289,-122.339835]]],[[[47.610289,-122.339835],[47.610686,-122.338853],[47.610743,-122.338712]]],[[[47.606968,-122.33909],[47.607604,-122.339676]]],[[[47.607604,-122.339676],[47.608526,-122.340513],[47.608539,-122.340534],[47.608553,-122.340534]]],[[[47.605165,-122.337497],[47.605843,-122.338104],[47.605883,-122.338146]]],[[[47.606124,-122.337565],[47.606591,-122.336443]]],[[[47.606591,-122.336443],[47.607058,-122.335342]]],[[[47.607058,-122.335342],[47.607526,-122.33422]]],[[[47.607526,-122.33422],[47.607809,-122.333559],[47.607979,-122.333118]]],[[[47.607979,-122.333118],[47.608446,-122.332016]]],[[[47.608446,-122.332016],[47.608771,-122.331235],[47.60887,-122.331015],[47.608941,-122.330855],[47.608998,-122.330715],[47.609026,-122.330655]]],[[[47.605318,-122.339468],[47.605657,-122.338667]]],[[[47.605657,-122.338667],[47.605883,-122.338146]]],[[[47.60542,-122.336896],[47.605873,-122.335794]]],[[[47.605873,-122.335794],[47.60634,-122.334693]]],[[[47.60634,-122.334693],[47.606808,-122.333571]]],[[[47.606808,-122.333571],[47.606836,-122.333531],[47.607275,-122.332469]]],[[[47.607275,-122.332469],[47.607741,-122.331368]]],[[[47.607741,-122.331368],[47.607954,-122.330826],[47.608039,-122.330626],[47.608068,-122.330546],[47.60811,-122.330466],[47.608152,-122.330366],[47.60818,-122.330306],[47.608209,-122.330246]]],[[[47.605165,-122.337497],[47.605236,-122.337316],[47.60542,-122.336896]]],[[[47.607831,-122.339115],[47.608072,-122.338554],[47.608298,-122.338013]]],[[[47.608298,-122.338013],[47.608765,-122.336891]]],[[[47.608765,-122.336891],[47.609232,-122.33579]]],[[[47.609232,-122.33579],[47.609686,-122.334688]]],[[[47.609686,-122.334688],[47.610138,-122.333626],[47.610153,-122.333566]]],[[[47.610153,-122.333566],[47.61062,-122.332464]]],[[[47.607038,-122.341018],[47.607321,-122.340357]]],[[[47.607647,-122.339576],[47.607831,-122.339115]]],[[[47.607364,-122.340236],[47.607562,-122.339776],[47.607604,-122.339676]]],[[[47.606842,-122.338214],[47.607309,-122.337092]]],[[[47.607309,-122.337092],[47.607763,-122.335991]]],[[[47.607763,-122.335991],[47.607989,-122.33547],[47.608173,-122.335029],[47.60823,-122.334889]]],[[[47.60823,-122.334889],[47.608286,-122.334749],[47.608697,-122.333767]]],[[[47.608697,-122.333767],[47.608782,-122.333587],[47.609164,-122.332666],[47.609164,-122.332645]]],[[[47.609164,-122.332645],[47.609375,-122.332246],[47.609573,-122.331765],[47.609588,-122.331725],[47.609616,-122.331685],[47.60963,-122.331665],[47.609644,-122.331645]]],[[[47.606049,-122.340117],[47.606375,-122.339316]]],[[[47.609586,-122.330772],[47.609602,-122.33061],[47.609603,-122.330549],[47.609632,-122.330469],[47.609702,-122.330329],[47.609758,-122.330209],[47.609786,-122.33019],[47.609814,-122.33017],[47.609883,-122.330152]]],[[[47.605657,-122.338667],[47.605671,-122.338687],[47.606375,-122.339316]]],[[[47.604953,-122.338018],[47.605603,-122.338624],[47.605657,-122.338667]]],[[[47.607364,-122.340236],[47.608366,-122.341137]]],[[[47.606375,-122.339316],[47.60708,-122.339965],[47.607364,-122.340236]]]];
 
 const censusUrl = "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer/25";
+const seattleSceneUrl = "https://www.arcgis.com/home/webscene/viewer.html?url=https%3A%2F%2Fbasemaps3d.arcgis.com%2Farcgis%2Frest%2Fservices%2FEsri3D_Buildings_v1%2FSceneServer&viewpoint=cam:-122.3468,47.5974,1000;32,58&ui=min";
 const streetsUrl = "https://services.arcgis.com/ZOyb2t4B0UYuYNYH/arcgis/rest/services/Seattle_Streets_1/FeatureServer/0";
 const boundaryUrl = "https://github.com/PublicaMundi/MappingAPI/blob/master/data/geojson/us-states.json";
 const fmt = new Intl.NumberFormat("en-US");
@@ -109,12 +116,28 @@ const chapters = [
     notes: "3 min · Pause on the street map, then click Highlight low scores. Switch to Satellite to show the same red segments against aerial imagery. Point to the connected red segments on Seneca Street and to the separate red runs on Madison Street and 5th Avenue. Red means a recorded score from 1 to 39 under this demo rule. The map is a first pass to direct review. Maintenance priorities also depend on factors like traffic, inspections and budgets."
   },
   {
+    tag: "Walking service area",
+    title: "How long is the walk to the shop?",
+    intro: "Imagine a shop at 3rd Avenue and Seneca Street. Choose a time limit and follow the orange route from the marked start to the shop.",
+    takeaway: "Each green point is within the selected walk time of the shop. The dashed circle shows how far you could go in a straight line.",
+    visual: "Walking access around an example shop", label: "Downtown Seattle",
+    notes: "2 min · Choose 2 minutes and point to Start and Shop. Trace the orange route, then choose 6 minutes and show how the start moves farther away. The example uses the 96 mapped street segments and an assumed speed of 4.8 km/h. Crossing delays, sidewalk access and streets outside the sample are outside the model."
+  },
+  {
     tag: "From observation to action",
     title: "See the pattern. Check the detail. Decide.",
     intro: "I got into GIS through geography and navigation data. As a GIS developer, I build tools that help people see what’s happening, check the underlying records and decide where to look next.",
     takeaway: "What table from your own work would you like to see on a map?",
     visual: "How I got into GIS", label: "Jamil Garzuzi",
     notes: "2 min · Tell one short story from your work on navigation data, then connect it to the street-color example. If there’s time, mention that the same idea applies to your Ras Al Khaimah urban heat project: a map can show where surface temperatures warrant a closer look."
+  },
+  {
+    tag: "3D buildings",
+    title: "Downtown Seattle in 3D",
+    intro: "Rotate the scene to see how building heights shape the blocks we mapped.",
+    takeaway: "Where would you expect the tallest buildings to cast shadows across the street?",
+    visual: "Seattle building heights and streets", label: "ArcGIS Scene Viewer",
+    notes: "30 sec · Rotate the view once over downtown. Point to a tall building beside a shorter one and ask the audience to imagine how the shadows change through the day. The scene requires an internet connection and a WebGL-capable browser."
   }
 ];
 
@@ -158,17 +181,18 @@ function stateMap() {
   </svg>`;
 }
 
-function roadMap() {
+function roadMap(isWalk = false) {
   const ordered = [...streets].sort((a,b) => Number(lowScore(a[3])) - Number(lowScore(b[3])));
   const lines = ordered.map(([name, from, to, score, path]) => {
-    const red = highlight && lowScore(score);
+    const red = !isWalk && highlight && lowScore(score);
     const d = path.split(";").map(points => "M" + points.split(" ").join("L")).join("");
     return `<path class="road${red ? " flagged" : ""}" d="${d}" fill="none" stroke="${red ? "#b03622" : "#788e84"}" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"><title>${name}, ${from} to ${to} · recorded score ${score}</title></path>`;
   }).join("");
-  return `<svg class="map" viewBox="-40 -72 635 523" role="img" aria-label="${highlight ? flaggedCount + " of " : ""}${streets.length} downtown Seattle street segments${highlight ? " with low pavement scores highlighted in red" : " shown in gray"}">
-    <rect x="-40" y="-72" width="635" height="523" fill="#e7efed"/>
+  return `<svg class="map" viewBox="${isWalk ? "-55 -75 665 670" : "-40 -72 635 523"}" role="img" aria-label="${isWalk ? `Reachable street segments within ${walkMinutes} minutes of the example shop. ` : ""}${!isWalk && highlight ? flaggedCount + " of " : ""}${streets.length} downtown Seattle street segments${highlight ? " with low pavement scores highlighted in red" : " shown in gray"}">
+    <rect x="-55" y="-75" width="665" height="670" fill="#e7efed"/>
     ${lines}
-    <text class="street-label" x="260" y="246" text-anchor="middle" pointer-events="none">SENECA ST</text>
+    ${isWalk ? walkOverlay() : ""}
+    ${isWalk ? "" : '<text class="street-label" x="260" y="246" text-anchor="middle" pointer-events="none">SENECA ST</text>'}
     <text class="street-label" x="367" y="381" text-anchor="middle" pointer-events="none">MADISON ST</text>
     <path d="M470 329l40-22" stroke="#516d63" stroke-width="1.2" fill="none"/>
     <text class="street-label" x="514" y="310" pointer-events="none">5TH AVE</text>
@@ -177,6 +201,141 @@ function roadMap() {
     <text x="40" y="436" text-anchor="middle" class="street-label">500 ft</text>
     <text x="565" y="-40" text-anchor="middle" class="water">↑ N</text>
   </svg>`;
+}
+
+const shopNode = "275,260";
+const walkingMetersPerMinute = 80;
+const metersPerMapUnit = 1.524;
+let walkMinutes = 4;
+
+function buildWalkingNetwork() {
+  const neighbors = new Map();
+  const edges = [];
+  const vertices = new Map();
+  const previous = new Map();
+  for (const [streetIndex, street] of streets.entries()) {
+    for (const [pathIndex, path] of street[4].split(";").entries()) {
+      const nodes = path.split(" ");
+      const coordinates = streetLatLon[streetIndex][pathIndex];
+      for (let i = 1; i < nodes.length; i++) {
+        const [from, to] = [nodes[i - 1], nodes[i]];
+        if (from === to) continue;
+        const [a, b] = [from, to].map(node => node.split(",").map(Number));
+        const meters = Math.hypot(b[0] - a[0], b[1] - a[1]) * metersPerMapUnit;
+        edges.push({ from, to, a, b, meters, latLng: [coordinates[i - 1], coordinates[i]] });
+        vertices.set(from, { xy: a, latLng: coordinates[i - 1] });
+        vertices.set(to, { xy: b, latLng: coordinates[i] });
+        if (!neighbors.has(from)) neighbors.set(from, []);
+        if (!neighbors.has(to)) neighbors.set(to, []);
+        neighbors.get(from).push([to, meters]);
+        neighbors.get(to).push([from, meters]);
+      }
+    }
+  }
+  const distance = new Map([[shopNode, 0]]);
+  const pending = new Set(neighbors.keys());
+  while (pending.size) {
+    let closest;
+    let best = Infinity;
+    for (const node of pending) {
+      const meters = distance.get(node) ?? Infinity;
+      if (meters < best) {
+        closest = node;
+        best = meters;
+      }
+    }
+    if (closest === undefined) break;
+    pending.delete(closest);
+    for (const [neighbor, length] of neighbors.get(closest)) {
+      const candidate = best + length;
+      if (candidate < (distance.get(neighbor) ?? Infinity)) {
+        distance.set(neighbor, candidate);
+        previous.set(neighbor, closest);
+      }
+    }
+  }
+  return { edges, distance, vertices, previous, shopLatLng: vertices.get(shopNode).latLng };
+}
+
+const walkingNetwork = buildWalkingNetwork();
+
+function reachableLines(minutes) {
+  const budget = minutes * walkingMetersPerMinute;
+  return walkingNetwork.edges.flatMap(edge => {
+    const { from, to, meters } = edge;
+    const fraction = node => Math.max(0, Math.min(1, (budget - (walkingNetwork.distance.get(node) ?? Infinity)) / meters));
+    const fromFraction = fraction(from);
+    const toFraction = fraction(to);
+    if (fromFraction + toFraction >= 1) return [{ edge, start: 0, end: 1 }];
+    const lines = [];
+    if (fromFraction > 0) lines.push({ edge, start: 0, end: fromFraction });
+    if (toFraction > 0) lines.push({ edge, start: 1 - toFraction, end: 1 });
+    return lines;
+  });
+}
+
+function walkLineCoordinates(a, b, start, end) {
+  return [start, end].map(fraction => a.map((value, axis) => value + (b[axis] - value) * fraction));
+}
+
+function exampleWalk(minutes) {
+  const cutoff = reachableLines(minutes).find(({ start, end }) => start > 0 || end < 1);
+  const { edge, start, end } = cutoff;
+  const [fraction, nextNode] = start > 0 ? [start, edge.to] : [end, edge.from];
+  const point = ([a, b]) => walkLineCoordinates(a, b, fraction, fraction)[0];
+  const xy = [point([edge.a, edge.b])];
+  const latLng = [point(edge.latLng)];
+  let node = nextNode;
+  while (node) {
+    const vertex = walkingNetwork.vertices.get(node);
+    xy.push(vertex.xy);
+    latLng.push(vertex.latLng);
+    node = walkingNetwork.previous.get(node);
+  }
+  return { xy, latLng };
+}
+
+function walkOverlay() {
+  const route = exampleWalk(walkMinutes);
+  const [startX, startY] = route.xy[0];
+  const [x, y] = shopNode.split(",").map(Number);
+  const radius = walkMinutes * walkingMetersPerMinute / metersPerMapUnit;
+  const paths = reachableLines(walkMinutes).map(({ edge, start, end }) => {
+    const [a, b] = walkLineCoordinates(edge.a, edge.b, start, end);
+    return `<path d="M${a.join(",")}L${b.join(",")}" stroke="#096e58" stroke-width="6" stroke-linecap="round" fill="none"/>`;
+  }).join("");
+  return `<circle cx="${x}" cy="${y}" r="${radius}" stroke="#355a8c" stroke-width="2.5" stroke-dasharray="8 6" fill="none"/>
+    ${paths}
+    <polyline points="${route.xy.map(point => point.join(",")).join(" ")}" fill="none" stroke="#fff" stroke-width="12" stroke-linejoin="round" stroke-linecap="round"/>
+    <polyline points="${route.xy.map(point => point.join(",")).join(" ")}" fill="none" stroke="#ba4c0c" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="${startX}" cy="${startY}" r="9" fill="#ba4c0c" stroke="white" stroke-width="3"/>
+    <text x="${startX}" y="${startY - 14}" text-anchor="middle" class="walk-marker-label">Start</text>
+    <circle cx="${x}" cy="${y}" r="8" fill="#162d29" stroke="white" stroke-width="3"/>
+    <text x="${x + 15}" y="${y + 22}" class="walk-marker-label">Shop</text>`;
+}
+
+function drawWalkingMap() {
+  get("map-fallback").innerHTML = roadMap(true);
+  if (mapView.walkLayer) updateLiveWalk(mapView, window.L);
+  get("walk-distance").textContent = `Start → Shop · ${walkMinutes} min one way`;
+}
+
+function updateLiveWalk(view, L) {
+  view.walkLayer.clearLayers();
+  L.circle(walkingNetwork.shopLatLng, { radius: walkMinutes * walkingMetersPerMinute,
+    color: "#547cba", fill: false, dashArray: "8 6", weight: 3, interactive: false }).addTo(view.walkLayer);
+  for (const { edge, start, end } of reachableLines(walkMinutes)) {
+    L.polyline(walkLineCoordinates(...edge.latLng, start, end), {
+      color: basemap === "satellite" ? "#35e8b0" : "#096e58", weight: 5, interactive: false
+    }).addTo(view.walkLayer);
+  }
+  const route = exampleWalk(walkMinutes);
+  L.polyline(route.latLng, { color: "#fff", weight: 10, interactive: false }).addTo(view.walkLayer);
+  L.polyline(route.latLng, { color: "#ba4c0c", weight: 6, interactive: false }).addTo(view.walkLayer);
+  L.circleMarker(route.latLng[0], { radius: 8, color: "#fff", weight: 2, fillColor: "#ba4c0c", fillOpacity: 1 })
+    .bindTooltip("Start", { permanent: true, direction: "top" }).addTo(view.walkLayer);
+  L.circleMarker(walkingNetwork.shopLatLng, { radius: 7, color: "#fff", weight: 2, fillColor: "#162d29", fillOpacity: 1 })
+    .bindTooltip("Shop", { permanent: true, direction: "bottom" }).addTo(view.walkLayer);
 }
 
 // Shared basemap choice. The SVG view remains available when live tiles cannot load.
@@ -223,7 +382,7 @@ function loadLeaflet() {
   return leafletPromise;
 }
 
-function mountMap(isRoad) {
+function mountMap(isRoad, isWalk = false) {
   const figure = get("figure");
   figure.innerHTML = `<div class="map-panel">
     <div class="map-toolbar" role="group" aria-label="Map background">
@@ -234,11 +393,11 @@ function mountMap(isRoad) {
       <span class="map-status" id="map-status" role="status"></span>
     </div>
     <div class="map-viewport">
-      <div id="map-fallback" class="map-fallback">${isRoad ? roadMap() : stateMap()}</div>
+      <div id="map-fallback" class="map-fallback">${isRoad ? roadMap(isWalk) : stateMap()}</div>
       <div id="live-map" class="live-map" role="region" aria-label="${isRoad ? "Interactive Seattle street condition map" : "Interactive Washington population map"}" aria-hidden="true" inert></div>
     </div>
   </div>`;
-  mapView = { isRoad, map: null, layer: null, ready: false, request: 0, timer: null };
+  mapView = { isRoad, isWalk, map: null, layer: null, ready: false, request: 0, timer: null };
   applyBasemap(mapView);
 }
 
@@ -281,12 +440,20 @@ function initLiveMap(view, L) {
     view.roads = streets.map(([name, from, to, score], i) => {
       const paths = streetLatLon[i];
       L.polyline(paths, { color: "#172a28", weight: 7.5, opacity: .8, interactive: false }).addTo(view.map);
-      return L.polyline(paths, { color: roadColor(score), weight: 4.5, opacity: .96 })
+      return L.polyline(paths, { color: view.isWalk ? "#788e84" : roadColor(score), weight: 4.5, opacity: .96 })
         .bindTooltip(`${name} · ${from} to ${to}<br>Recorded pavement score: ${score}`)
         .bindPopup(`<strong>${name}</strong><br>${from} to ${to}<br>Recorded pavement score: ${score}`)
         .addTo(view.map);
     });
     view.bounds = L.latLngBounds(streetLatLon.flat(2));
+    if (view.isWalk) {
+      view.walkLayer = L.layerGroup().addTo(view.map);
+      const [lat, lon] = walkingNetwork.shopLatLng;
+      const latSpan = 480 / 111320;
+      const lonSpan = latSpan / Math.cos(lat * Math.PI / 180);
+      view.bounds.extend([[lat - latSpan, lon - lonSpan], [lat + latSpan, lon + lonSpan]]);
+      updateLiveWalk(view, L);
+    }
   } else {
     L.polygon(boundary.map(polygon => polygon.map(ring => ring.map(([lon, lat]) => [lat, lon]))),
       { color: "#408778", weight: 2, fill: false, interactive: false }).addTo(view.map);
@@ -303,7 +470,8 @@ function initLiveMap(view, L) {
 }
 
 function recolorMap(view) {
-  if (view.roads) {
+  if (view.walkLayer) updateLiveWalk(view, window.L);
+  else if (view.roads) {
     view.roads.forEach((line, i) => line.setStyle({ color: roadColor(streets[i][3]) }));
     view.roads.forEach((line, i) => {
       if (highlight && lowScore(streets[i][3])) line.bringToFront();
@@ -382,10 +550,18 @@ function draw() {
   get("meta").textContent = `${step + 1} / ${chapters.length}`;
   get("dots").innerHTML = chapters.map((_, i) => `<span class="dot${i <= step ? " on" : ""}"></span>`).join("");
   get("prev").disabled = step === 0;
-  get("next").textContent = ["Show the map →", "Street example →", "Show the streets →", "Wrap up →", "Start again ↺"][step];
+  get("next").textContent = ["Show the map →", "Street example →", "Show the streets →", "Walking service area →", "Wrap up →", "Seattle in 3D →", "Start again ↺"][step];
   get("controls").innerHTML = step === 3
     ? '<button id="highlight" type="button" class="primary" aria-pressed="false">Highlight low scores</button><p id="result" class="result-line" aria-live="polite"></p>'
-    : "";
+    : step === 4
+      ? `<label for="walk-time">Walking time</label>
+        <select id="walk-time">
+          ${[2, 4, 6].map(minutes => `<option value="${minutes}"${minutes === walkMinutes ? " selected" : ""}>${minutes} min</option>`).join("")}
+        </select>
+        <p id="walk-distance" class="result-line" aria-live="polite"></p>`
+      : step === 6
+        ? `<a class="primary scene-link" href="${seattleSceneUrl}" target="_blank" rel="noopener">Open in Scene Viewer ↗</a>`
+        : "";
   const source = get("legend");
   const figure = get("figure");
   if (step === 0) {
@@ -400,6 +576,13 @@ function draw() {
   } else if (step === 3) {
     mountMap(true);
     drawRoads();
+  } else if (step === 4) {
+    mountMap(true, true);
+    drawWalkingMap();
+    source.innerHTML = `<span class="route-key"></span> Example route · <span class="walk-key"></span> Reachable streets · <span class="radius-key"></span> Straight-line radius<br>4.8 km/h assumed · 96 sampled <a href="${streetsUrl}" target="_blank" rel="noopener">SDOT</a> street segments`;
+  } else if (step === 6) {
+    figure.innerHTML = `<div class="scene-panel"><iframe src="${seattleSceneUrl}" title="Downtown Seattle 3D buildings" allowfullscreen></iframe></div>`;
+    source.innerHTML = '3D building layer from <a href="https://www.arcgis.com/home/item.html?id=b8fec5af7dfe4866b1b8ac2d2800f282" target="_blank" rel="noopener">Esri Living Atlas</a> · Requires internet and WebGL';
   } else {
     figure.innerHTML = '<div class="career"><ol><li><strong>Geography</strong><span>I learned to look for patterns across places.</span></li><li><strong>Navigation data</strong><span>I worked on the road data behind the maps people use.</span></li><li><strong>GIS development</strong><span>I build tools that turn spatial data into decisions people can explain.</span></li></ol></div>';
     source.textContent = "GIS Week · From a spreadsheet to a place on the map";
@@ -420,7 +603,10 @@ function drawRoads() {
 
 function go(next, focus = true) {
   if (next < 0 || next >= chapters.length) return;
-  if (next === 0) highlight = false;
+  if (next === 0) {
+    highlight = false;
+    walkMinutes = 4;
+  }
   step = next;
   draw();
   if (focus) get("title").focus({ preventScroll: true });
@@ -430,6 +616,11 @@ get("controls").addEventListener("click", event => {
   if (event.target.id !== "highlight") return;
   highlight = !highlight;
   drawRoads();
+});
+get("controls").addEventListener("change", event => {
+  if (event.target.id !== "walk-time") return;
+  walkMinutes = Number(event.target.value);
+  drawWalkingMap();
 });
 get("prev").addEventListener("click", () => go(step - 1));
 get("next").addEventListener("click", () => go((step + 1) % chapters.length));
@@ -444,7 +635,7 @@ document.addEventListener("fullscreenchange", () => {
   full.textContent = document.fullscreenElement ? "Exit full screen" : "Full screen";
 });
 document.addEventListener("keydown", event => {
-  if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.target.closest(".live-map")) return;
+  if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.target.closest(".live-map, select")) return;
   if (event.key === "ArrowRight") go(step + 1);
   if (event.key === "ArrowLeft") go(step - 1);
 });
